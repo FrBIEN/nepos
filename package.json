@@ -1,0 +1,25 @@
+{
+  "name": "nepos",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && node scripts/single-file.mjs",
+    "preview": "vite preview",
+    "test": "tsc -p tsconfig.test.json && node scripts/test.mjs",
+    "test:fls-java": "node scripts/verify-fls-java.mjs",
+    "test:browser": "playwright test",
+    "verify": "npm test && npm run test:browser && npm run build"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.0",
+    "@types/node": "^22.19.19",
+    "esbuild": "^0.27.2",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  }
+}

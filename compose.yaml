@@ -1,0 +1,12 @@
+services:
+  nepos:
+    image: dev.spittank.org/daniel/nepos:latest
+    build: .
+    ports:
+      - "8080:8080"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=64m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
