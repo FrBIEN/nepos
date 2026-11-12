@@ -1,0 +1,33 @@
+import type { EventBus } from '../core/EventBus';
+import type { SimulationEngine } from '../core/SimulationEngine';
+import type { NetworkStack } from '../network/NetworkStack';
+import type { PacketJournal } from '../network/PacketJournal';
+import type { HostServerManager } from '../apps/WebServer';
+import type { HostDhcpServerManager, PendingDHCPClientManager } from '../apps/DHCP';
+import type { HostDnsServerManager } from '../apps/DNS';
+import type { HostEchoServerManager } from '../apps/EchoServer';
+import type { HostEmailServerManager } from '../apps/email/EmailServer';
+import type { HostEmailClientManager } from '../apps/email/EmailClient';
+import type { HostFileSystemManager } from '../apps/FileSystem';
+import type { PeerToPeerManager } from '../apps/PeerToPeer';
+import type { EditorSessions } from '../apps/EditorSessions';
+import type { RuntimeIdentifiers } from './RuntimeIdentifiers';
+import type { Operations } from './Operations';
+export interface RuntimeDependencies {
+    events: EventBus;
+    simulation: SimulationEngine;
+    network: NetworkStack;
+    journal: PacketJournal;
+    hostServerManager: HostServerManager;
+    hostDhcpServerManager: HostDhcpServerManager;
+    pendingDHCPClientManager: PendingDHCPClientManager;
+    hostDnsServerManager: HostDnsServerManager;
+    hostEchoServerManager: HostEchoServerManager;
+    hostEmailServerManager: HostEmailServerManager;
+    hostEmailClientManager: HostEmailClientManager;
+    hostFileSystemManager: HostFileSystemManager;
+    peerToPeerManager: PeerToPeerManager;
+    editorSessions: EditorSessions;
+    ids: RuntimeIdentifiers;
+    operations: Operations;
+}
