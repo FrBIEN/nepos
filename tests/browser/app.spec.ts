@@ -1,0 +1,33 @@
+import { test, expect } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
+test.beforeEach(async({page})=>{await page.goto('/');await page.waitForFunction(()=>!!window.browserTests);});
+test('all component lifecycle and data safety regressions',async({page})=>{const passed=await page.evaluate(()=>window.browserTests.architecture());expect(passed).toHaveLength(14);});
+test('real WebRTC across project runtimes',async({page})=>{const passed=await page.evaluate(()=>window.browserTests.modem());expect(passed).toHaveLength(7);});
+test('Enter creates a file; binary upload/download is byte exact and replacement is guarded',async({page})=>{
+    await page.evaluate(()=>window.browserTests.explorer());
+    await page.locator('#explorer-new-file').click();await page.locator('dialog input').fill('lesson.txt');await page.locator('dialog input').press('Enter');
+    await expect(page.getByRole('button',{name:'lesson.txt',exact:true})).toBeVisible();
+    const bytes=Buffer.from([0,255,128,13,10,65,0,66]);
+    await page.locator('#explorer-upload-input').setInputFiles({name:'data.bin',mimeType:'application/octet-stream',buffer:bytes});
+    await expect(page.getByRole('button',{name:'data.bin',exact:true})).toBeVisible();
+    expect(await page.evaluate(()=>window.browserTests.bytes('/data.bin'))).toEqual([...bytes]);
+    await page.locator('#explorer-upload-input').setInputFiles({name:'data.bin',mimeType:'application/octet-stream',buffer:Buffer.from('replacement')});
+    await expect(page.locator('dialog')).toContainText('ersetzen');await page.getByRole('button',{name:'Abbrechen',exact:true}).click();
+    expect(await page.evaluate(()=>window.browserTests.bytes('/data.bin'))).toEqual([...bytes]);
+    await page.getByRole('button',{name:'data.bin',exact:true}).click();
+    const pending=page.waitForEvent('download');await page.locator('#explorer-download').click();const download=await pending;
+    expect(await readFile((await download.path())!)).toEqual(bytes);
+});
+test('design undo/redo preserves deleted devices and connected cables; typing keeps native undo',async({page})=>{
+    await page.locator('[data-device="rechner"]').click();await page.locator('#network-canvas').click({position:{x:220,y:180}});
+    await expect(page.locator('#device-count')).toContainText('1');
+    await page.getByRole('button',{name:'Rückgängig',exact:true}).click();await expect(page.locator('#device-count')).toContainText('0');
+    await page.getByRole('button',{name:'Wiederholen',exact:true}).click();await expect(page.locator('#device-count')).toContainText('1');
+    await page.evaluate(()=>window.browserTests.cabledWorkspace());await page.evaluate(()=>window.browserTests.selectFirst());
+    await page.locator('#btn-delete').click();await expect(page.locator('#device-count')).toContainText('1');await expect(page.locator('#connection-count')).toContainText('0');
+    await page.getByRole('button',{name:'Rückgängig',exact:true}).click();await expect(page.locator('#device-count')).toContainText('2');await expect(page.locator('#connection-count')).toContainText('1');
+    expect(await page.evaluate(()=>window.browserTests.content('a','/home/keep.txt'))).toBe('Retained data');
+    await page.locator('#btn-tab-devices').click();
+    await page.locator('#project-title').fill('Typing');await page.locator('#project-title').press('ControlOrMeta+z');
+    await expect(page.locator('#device-count')).toContainText('2');
+});

@@ -1,0 +1,215 @@
+{
+  "version": "1.0",
+  "name": "Lernnetz – Web und E-Mail",
+  "description": "Zwei Endgeräte am Switch. Ping 192.168.0.20, Webbrowser http://web.schule.test/, Echo TCP 55555. E-Mail-Konto schueler@schule.test, Kennwort filius (nur simuliertes Lernkonto).",
+  "createdAt": "2026-10-12T22:56:09.244Z",
+  "nodes": [
+    {
+      "id": "pc-client",
+      "type": "notebook",
+      "name": "Tablet-Client",
+      "position": {
+        "x": 200,
+        "y": 200
+      },
+      "networkInterface": {
+        "ip": "192.168.0.10",
+        "mac": "02:00:00:00:00:10",
+        "gateway": "",
+        "dns": "192.168.0.20",
+        "subnetMask": "255.255.255.0",
+        "useDHCP": false
+      },
+      "installedApps": [
+        "terminal",
+        "softwarewizard",
+        "webbrowser",
+        "webserver",
+        "dhcpserver",
+        "dnsserver",
+        "emailserver",
+        "emailclient",
+        "echoserver",
+        "simpleclient",
+        "firewall",
+        "peertopeer",
+        "fileexplorer",
+        "texteditor",
+        "imageviewer"
+      ]
+    },
+    {
+      "id": "pc-server",
+      "type": "rechner",
+      "name": "Schulserver",
+      "position": {
+        "x": 520,
+        "y": 200
+      },
+      "networkInterface": {
+        "ip": "192.168.0.20",
+        "mac": "02:00:00:00:00:20",
+        "gateway": "",
+        "dns": "192.168.0.20",
+        "subnetMask": "255.255.255.0",
+        "useDHCP": false
+      },
+      "installedApps": [
+        "terminal",
+        "softwarewizard",
+        "webbrowser",
+        "webserver",
+        "dhcpserver",
+        "dnsserver",
+        "emailserver",
+        "emailclient",
+        "echoserver",
+        "simpleclient",
+        "firewall",
+        "peertopeer",
+        "fileexplorer",
+        "texteditor",
+        "imageviewer"
+      ]
+    },
+    {
+      "id": "switch",
+      "type": "switch",
+      "name": "Switch",
+      "position": {
+        "x": 360,
+        "y": 360
+      },
+      "portCount": 8
+    }
+  ],
+  "cables": [
+    {
+      "id": "cable-client",
+      "endpoint1": {
+        "nodeId": "pc-client",
+        "portIndex": 0
+      },
+      "endpoint2": {
+        "nodeId": "switch",
+        "portIndex": 0
+      }
+    },
+    {
+      "id": "cable-server",
+      "endpoint1": {
+        "nodeId": "pc-server",
+        "portIndex": 0
+      },
+      "endpoint2": {
+        "nodeId": "switch",
+        "portIndex": 1
+      }
+    }
+  ],
+  "serviceState": {
+    "dhcpServers": [],
+    "dnsServers": [
+      {
+        "hostId": "pc-server",
+        "running": true,
+        "records": [
+          {
+            "name": "web.schule.test",
+            "type": 1,
+            "ttl": 60,
+            "value": "192.168.0.20"
+          },
+          {
+            "name": "schule.test",
+            "type": 15,
+            "ttl": 60,
+            "value": "mail.schule.test"
+          },
+          {
+            "name": "mail.schule.test",
+            "type": 1,
+            "ttl": 60,
+            "value": "192.168.0.20"
+          }
+        ]
+      }
+    ],
+    "webServers": [
+      {
+        "hostId": "pc-server",
+        "running": true,
+        "files": [
+          {
+            "name": "index.html",
+            "mimeType": "text/html",
+            "content": "<!doctype html><html lang=\"de\"><meta charset=\"utf-8\"><style>body{font:20px system-ui;padding:24px;color:#164e63;background:#ecfeff}a{display:inline-block;padding:16px}</style><h1>Willkommen im Lernnetz 🌐</h1><p>Diese Seite wurde über ARP, Ethernet und TCP aus dem simulierten Schulserver geladen.</p><a href=\"/zweite.html\">Zweite Seite öffnen</a></html>"
+          },
+          {
+            "name": "zweite.html",
+            "mimeType": "text/html",
+            "content": "<h1>Zweite Seite</h1><p>Auch dieser Seitenwechsel durchläuft die Simulation.</p><a href=\"/\">Zurück zur Startseite</a>"
+          }
+        ]
+      }
+    ],
+    "echoServers": [
+      {
+        "hostId": "pc-server",
+        "port": 55555,
+        "running": true
+      }
+    ],
+    "emailServers": [
+      {
+        "hostId": "pc-server",
+        "running": true,
+        "serverState": {
+          "mailDomain": "schule.test",
+          "running": true,
+          "accounts": [
+            {
+              "key": "schueler",
+              "account": {
+                "username": "schueler",
+                "password": "filius",
+                "firstName": "Lernkonto",
+                "lastName": "",
+                "emailAddress": "schueler@schule.test",
+                "messages": [],
+                "pop3Server": "192.168.0.20",
+                "pop3Port": 110,
+                "smtpServer": "192.168.0.20",
+                "smtpPort": 25
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "emailClients": [
+      {
+        "hostId": "pc-client",
+        "clientState": {
+          "account": {
+            "username": "schueler",
+            "password": "filius",
+            "firstName": "Lernkonto",
+            "lastName": "",
+            "emailAddress": "schueler@schule.test",
+            "messages": [],
+            "pop3Server": "192.168.0.20",
+            "pop3Port": 110,
+            "smtpServer": "192.168.0.20",
+            "smtpPort": 25
+          },
+          "inbox": [],
+          "sent": [],
+          "drafts": []
+        }
+      }
+    ],
+    "fileSystems": [],
+    "peerToPeer": []
+  }
+}
